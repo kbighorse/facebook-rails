@@ -21,8 +21,10 @@ class ApplicationController < ActionController::Base
       fb_cookie = cookies["fbs_#{FacebookConfig['app_id']}"]
       return unless fb_cookie
 
-      # The cookie is a string of key=value separated with &, which we split into a hash
-      fb_info = Hash[fb_cookie.gsub('"','').split('&').collect { |i| i.split('=') }]
+      # The cookie is a string of key=value separated with &, 
+      # which we split into an array of pairs, then into a hash
+      pairs = fb_cookie.gsub('"','').split('&').collect { |i| i.split('=') }
+      fb_info = Hash[*pairs.flatten]
 
       # Get the md5 signature, and verify that the cookie hasn't been tampered with
       fb_signature = fb_info.delete('sig')    
